@@ -21,6 +21,10 @@ sudo ln -s /usr/local/node-v8.9.4-linux-x64/bin/node /usr/local/bin/node
 sudo ln -s /usr/local/node-v8.9.4-linux-x64/bin/npm /usr/local/bin/npm
 ````
 
+安装nginx：
+
+    sudo apt install nginx
+
 更改主题：
 ````
 sudo add-apt-repository ppa:noobslab/themes
