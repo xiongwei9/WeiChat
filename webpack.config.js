@@ -40,6 +40,9 @@ const config = {
         contentBase: './dist',
         hot: true,
         host: '0.0.0.0',  // can be accessed by other hosts
+        proxy: {
+            '/api': 'http://localhost:8081'
+        }
     },
 
     entry: {

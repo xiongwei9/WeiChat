@@ -1,15 +1,20 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import { view as Header } from './components/header';
-import { view as Footer } from './components/footer'; 
+import { view as Login } from './components/auth/';
+import { view as Header } from './components/header/';
+import { view as Footer } from './components/footer/'; 
 
 const Routes = () => (
     <BrowserRouter>
-        <div>
+        {/* <div>
+            <Route path='/' component={Login} />
             <Route path='/' component={Header} />
             <Route path='/' component={Footer} />
-        </div>
+        </div> */}
+        <Switch>
+            <Route path='/' component={Login} />
+        </Switch>
     </BrowserRouter>
 );
 

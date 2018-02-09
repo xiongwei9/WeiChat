@@ -1,0 +1,30 @@
+.login {
+    form {
+        margin: 0 auto;
+        width: 90%;
+
+        input, a {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            margin: .5em 0;
+            border: 1px solid #888;
+            border-radius: .3em;
+            padding: .2em .5em;
+            font-size: 1rem;
+
+            &.btn {
+                border: none;
+                background: #008000;
+                color: #fff;
+            }
+            &.submit {
+                margin-top: 1.2em;
+            }
+            &.reg {
+                background: #dd8800;
+                text-align: center;
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+#modal-root {
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // z-index: 9999;
+    // width: 100%;
+
+    .toast {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        box-sizing: border-box;
+        // width: 100%;
+        // max-width: 85%;
+        padding: .8em 1.5em;
+        margin: 0 auto;
+        text-align: center;
+        background: rgba(0, 0, 0, .8);
+        color: #fff;
+    }
+}
