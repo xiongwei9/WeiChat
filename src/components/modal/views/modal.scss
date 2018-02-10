@@ -7,7 +7,7 @@
 
     .toast {
         position: fixed;
-        top: 0;
+        top: -100%;
         left: 0;
         right: 0;
         z-index: 9999;
@@ -19,5 +19,10 @@
         text-align: center;
         background: rgba(0, 0, 0, .8);
         color: #fff;
+        transition: top 1s;
+
+        &.show {
+            top: 0;
+        }
     }
 }

@@ -1,3 +1,5 @@
-import view from './views/page';
+import * as actions from './actions';
+import reducer from './reducer';
+import view from './views/routes';
 
-export { view };
+export { actions, reducer, view };

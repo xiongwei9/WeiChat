@@ -13,6 +13,7 @@ const Routes = () => (
             <Route path='/' component={Footer} />
         </div> */}
         <Switch>
+            <Route path='/chat' component={Header} />
             <Route path='/' component={Login} />
         </Switch>
     </BrowserRouter>

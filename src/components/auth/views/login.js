@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './login.scss';
 
+import { loginRequest } from '../actions';
 import { view as Modal } from '../../modal/';
 
 const Toast = Modal.Toast;
@@ -14,7 +16,6 @@ class Login extends React.Component {
         this.state = {
             username: '',
             password: '',
-            showModal: false,
         };
 
         this.onInputChange = this.onInputChange.bind(this);
@@ -32,46 +33,29 @@ class Login extends React.Component {
         e.preventDefault();
         const { username, password } = this.state;
 
-        this.handleToast(true);
-        // if (!username) {
-        //     alert(`请输入用户名`);
-        //     return;
-        // }
-        // if (!password) {
-        //     alert(`请输入密码`);
-        //     return;
-        // }
+        if (!username) {
+            Toast.info(`请输入用户名`);
+            return;
+        }
+        if (!password) {
+            Toast.info(`请输入密码`);
+            return;
+        }
 
-        // fetch('/api/login', {
-        //     method: 'get'
-        // }).then((res) => {
-        //     if (res.status !== 200) {
-        //         console.log('fetch error');
-        //         return;
-        //     }
-        //     res.json().then((data) => {
-        //         console.log(data.data);
-        //     });
-        // });
-        
+        this.props.onLogin(username, password);
     }
 
-    handleToast(showModal) {
-        this.setState({
-            showModal,
-        });
+    componentWillReceiveProps(nextProps) {
+        // 登录成功
+        if (nextProps.logined) {
+            this.props.history.push('/chat');
+        }
     }
 
     render() {
-        // 这里的Toast仍有BUG，在快速多次点击时，会搞乱定时器和state
-        const tips = this.state.showModal ? (
-            <Toast close={() => this.handleToast(false)}>Hello</Toast>
-        ) : null;
-
         return (
             <div className='login'>
-                {tips}
-                <form action='#' type='post' onSubmit={this.onLogin}>
+                <form action='#' onSubmit={this.onLogin}>
                     <input className='username' type='text' value={this.state.username} onChange={this.onInputChange} placeholder='用户名' />
                     <input className='password' type='password' value={this.state.password} onChange={this.onInputChange} placeholder='密码' />
                    
@@ -83,4 +67,14 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+const mapStateToProps = (state, ownProps) => ({
+    logined: state.auth.logined,
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    onLogin(username, password) {
+        dispatch(loginRequest(username, password));
+    }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
