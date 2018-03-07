@@ -1,25 +1,80 @@
 import React from 'react';
 
+import { view as Modal } from '../../modal/';
+
+const Toast = Modal.Toast;
 
 class Register extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            name: '',
+            password: '',
+            passwordCfm: '',
+            desc: '',
+        };
+
         this.onRegister = this.onRegister.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
     }
 
-    onRegister() {
+    onInputChange(e) {
+        const target = e.target;
 
+        this.setState({
+            [target.name]: target.value,
+        });
+    }
+
+    onRegister(e) {
+        e.preventDefault();
+        const { name, password, passwordCfm, desc } = this.state;
+        const history = this.props.history;
+
+        if (!name || !password || !passwordCfm) {
+            Toast.info(`昵称与密码不能为空！`);
+            return;
+        }
+        if (password !== passwordCfm) {
+            Toast.info(`两次密码不相同，请重新输入！`);
+            return;
+        }
+
+        fetch('/api/register', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `name=${name}&password=${password}&desc=${desc}`,
+        }).then((resObj) => {
+            if (resObj.status !== 200) {
+                throw new Error(resObj.statusText);
+            }
+            return resObj.json();
+        }).then((data) => {
+            if (data.status !== 200) {
+                throw new Error(data.message);
+            }
+            Toast.info(`注册成功！`);
+            history.push('/');
+        }).catch((error) => {
+            Toast.info(error);
+        });
     }
 
     render() {
+        const { name, password, passwordCfm, desc } = this.state;
+        const pswNotCfm = password === passwordCfm ? '' : 'error';
+
         return (
             <div className='register'>
                 <form action='#' onSubmit={this.onRegister}>
-                    <img src='https://avatars3.githubusercontent.com/u/19465270?s=460&v=4'/>
-                    <input type='text' value='' placeholder='昵称' />
-                    <input type='text' value='' placeholder='个人简介' />
-                    <input type='submit' value='注册' />
+                    <input type='text' name='name' value={name} placeholder='昵称' onChange={this.onInputChange} maxlength='16' />
+                    <input type='password' name='password' value={password} placeholder='密码' onChange={this.onInputChange} maxlength='16' />
+                    <input type='password' name='passwordCfm' value={passwordCfm} className={pswNotCfm} placeholder='密码确认' onChange={this.onInputChange} maxlength='16' />
+                    <input type='text' name='desc' value={desc} placeholder='个人简介' onChange={this.onInputChange} maxlength='32' />
+                    <input type='submit' className='btn submit' value='注册' />
                 </form>
             </div>
         );

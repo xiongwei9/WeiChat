@@ -1,4 +1,5 @@
-.login {
+.login,
+.register {
     form {
         margin: 0 auto;
         width: 90%;
@@ -24,6 +25,10 @@
             &.reg {
                 background: #dd8800;
                 text-align: center;
+            }
+
+            &.error {
+                border-color: #ee0000;
             }
         }
     }

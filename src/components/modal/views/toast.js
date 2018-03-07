@@ -26,7 +26,7 @@ const Toast = {
         const modalRoot = document.getElementById('modal-root');
         ReactDOM.render(
             <React.Fragment>
-                <Modal className='toast show'>{msg}</Modal>
+                <Modal className='toast show'>{msg.toString()}</Modal>
             </React.Fragment>,
             modalRoot
         );

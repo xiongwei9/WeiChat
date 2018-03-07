@@ -31,15 +31,15 @@ const loginRequest = (username, password) => (dispatch) => {
             dispatch(loginFail(res.statusText));
             return;
         }
-        res.json().then((data) => {
-            if (data.status !== 200) {
-                dispatch(loginFail(data.message));
-                return;
-            }
-            dispatch(loginSuccess(data));
-        });
+        return res.json();
+    }).then((data) => {
+        if (data.status !== 200) {
+            dispatch(loginFail(data.message));
+            return;
+        }
+        dispatch(loginSuccess(data));
     }).catch((error) => {
-        Modal.Toast.info(`登录失败（${error}）`);
+        dispatch(loginFail(error));
     });
 };
 
