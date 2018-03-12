@@ -7,7 +7,7 @@
 
     .toast {
         position: fixed;
-        top: -100%;
+        bottom: -100%;
         left: 0;
         right: 0;
         z-index: 9999;
@@ -22,7 +22,7 @@
         transition: top 1s;
 
         &.show {
-            top: 0;
+            bottom: 0;
         }
     }
 }

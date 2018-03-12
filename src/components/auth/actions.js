@@ -25,7 +25,12 @@ const loginRequest = (username, password) => (dispatch) => {
     dispatch(loginStart());
 
     fetch('/api/login', {
-        method: 'get'
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${username}&password=${password}`,
     }).then((res) => {
         if (res.status !== 200) {
             dispatch(loginFail(res.statusText));
@@ -33,8 +38,8 @@ const loginRequest = (username, password) => (dispatch) => {
         }
         return res.json();
     }).then((data) => {
-        if (data.status !== 200) {
-            dispatch(loginFail(data.message));
+        if (data.ret !== 0) {
+            dispatch(loginFail(data.msg));
             return;
         }
         dispatch(loginSuccess(data));

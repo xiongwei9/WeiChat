@@ -17,4 +17,6 @@ const query = (sql, callback) => {
     });
 };
 
-exports.query = query;
+module.exports = {
+    query,
+};

@@ -43,6 +43,7 @@ class Register extends React.Component {
 
         fetch('/api/register', {
             method: 'post',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
@@ -53,8 +54,8 @@ class Register extends React.Component {
             }
             return resObj.json();
         }).then((data) => {
-            if (data.status !== 200) {
-                throw new Error(data.message);
+            if (data.ret !== 0) {
+                throw new Error(data.msg);
             }
             Toast.info(`注册成功！`);
             history.push('/');
@@ -70,10 +71,10 @@ class Register extends React.Component {
         return (
             <div className='register'>
                 <form action='#' onSubmit={this.onRegister}>
-                    <input type='text' name='name' value={name} placeholder='昵称' onChange={this.onInputChange} maxlength='16' />
-                    <input type='password' name='password' value={password} placeholder='密码' onChange={this.onInputChange} maxlength='16' />
-                    <input type='password' name='passwordCfm' value={passwordCfm} className={pswNotCfm} placeholder='密码确认' onChange={this.onInputChange} maxlength='16' />
-                    <input type='text' name='desc' value={desc} placeholder='个人简介' onChange={this.onInputChange} maxlength='32' />
+                    <input type='text' name='name' value={name} placeholder='昵称' onChange={this.onInputChange} maxLength='16' />
+                    <input type='password' name='password' value={password} placeholder='密码' onChange={this.onInputChange} maxLength='16' />
+                    <input type='password' name='passwordCfm' value={passwordCfm} className={pswNotCfm} placeholder='密码确认' onChange={this.onInputChange} maxLength='16' />
+                    <input type='text' name='desc' value={desc} placeholder='个人简介' onChange={this.onInputChange} maxLength='32' />
                     <input type='submit' className='btn submit' value='注册' />
                 </form>
             </div>
