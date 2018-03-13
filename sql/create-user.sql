@@ -1,8 +1,8 @@
 create table if not exists user (
-    id int unsigned ZEROFILL not null auto_increment,
+    uid varchar(16) not null,
     name varchar(16) not null,
     password varchar(16) not null,
     descs varchar(32),
 
-    primary key(id)
+    primary key(uid)
 );

@@ -10,7 +10,7 @@ const loginStart = () => ({
 
 const loginSuccess = (authInfo) => ({
     type: LOGIN_SUCCESS,
-    id: authInfo.id,
+    uid: authInfo.uid,
     name: authInfo.name,
 });
 
@@ -30,7 +30,7 @@ const loginRequest = (username, password) => (dispatch) => {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `id=${username}&password=${password}`,
+        body: `uid=${username}&password=${password}`,
     }).then((res) => {
         if (res.status !== 200) {
             dispatch(loginFail(res.statusText));

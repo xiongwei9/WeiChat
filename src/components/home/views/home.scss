@@ -1,0 +1,23 @@
+$bottomNavHeight: 2em;
+
+.home-bottom-nav {
+    box-sizing: border-box;
+    width: 100%;
+    height: $bottomNavHeight;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    line-height: $bottomNavHeight;
+    border-top: 1px solid #000;
+    // display: flex;
+
+    li {
+        display: inline-block;
+        width: 33.33%;
+        text-align: center;
+
+        &.selected {
+            color: #03ee03;
+        }
+    }
+}

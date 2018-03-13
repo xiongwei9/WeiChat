@@ -14,7 +14,7 @@ class Login extends React.Component {
         super(props);
 
         this.state = {
-            username: '',
+            uid: '',
             password: '',
         };
 
@@ -23,7 +23,7 @@ class Login extends React.Component {
     }
 
     onInputChange(e) {
-        const key = e.target.className;
+        const key = e.target.name;
         this.setState({
             [key]: e.target.value,
         });
@@ -31,9 +31,9 @@ class Login extends React.Component {
 
     onLogin(e) {
         e.preventDefault();
-        const { username, password } = this.state;
+        const { uid, password } = this.state;
 
-        if (!username) {
+        if (!uid) {
             Toast.info(`请输入用户名`);
             return;
         }
@@ -42,13 +42,13 @@ class Login extends React.Component {
             return;
         }
 
-        this.props.onLogin(username, password);
+        this.props.onLogin(uid, password);
     }
 
     componentWillReceiveProps(nextProps) {
         // 登录成功
         if (nextProps.logined) {
-            this.props.history.push('/chat');
+            this.props.history.push('/home');
         }
     }
 
@@ -56,8 +56,8 @@ class Login extends React.Component {
         return (
             <div className='login'>
                 <form action='#' onSubmit={this.onLogin}>
-                    <input className='username' type='text' value={this.state.username} onChange={this.onInputChange} placeholder='用户名' />
-                    <input className='password' type='password' value={this.state.password} onChange={this.onInputChange} placeholder='密码' />
+                    <input name='uid' type='text' value={this.state.uid} onChange={this.onInputChange} placeholder='用户名' />
+                    <input name='password' type='password' value={this.state.password} onChange={this.onInputChange} placeholder='密码' />
                    
                     <input type='submit' className='btn submit' value='登录' />
                     <Link to='/register' className='btn reg'>注册</Link>

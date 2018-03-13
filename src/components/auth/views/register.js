@@ -9,6 +9,7 @@ class Register extends React.Component {
         super(props);
 
         this.state = {
+            uid: '',
             name: '',
             password: '',
             passwordCfm: '',
@@ -29,7 +30,7 @@ class Register extends React.Component {
 
     onRegister(e) {
         e.preventDefault();
-        const { name, password, passwordCfm, desc } = this.state;
+        const { uid, name, password, passwordCfm, desc } = this.state;
         const history = this.props.history;
 
         if (!name || !password || !passwordCfm) {
@@ -47,7 +48,7 @@ class Register extends React.Component {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `name=${name}&password=${password}&desc=${desc}`,
+            body: `uid=${uid}&name=${name}&password=${password}&desc=${desc}`,
         }).then((resObj) => {
             if (resObj.status !== 200) {
                 throw new Error(resObj.statusText);
@@ -65,12 +66,13 @@ class Register extends React.Component {
     }
 
     render() {
-        const { name, password, passwordCfm, desc } = this.state;
+        const { uid, name, password, passwordCfm, desc } = this.state;
         const pswNotCfm = password === passwordCfm ? '' : 'error';
 
         return (
             <div className='register'>
                 <form action='#' onSubmit={this.onRegister}>
+                    <input type='text' name='uid' value={uid} placeholder='登录账号' onChange={this.onInputChange} maxLength='16' />
                     <input type='text' name='name' value={name} placeholder='昵称' onChange={this.onInputChange} maxLength='16' />
                     <input type='password' name='password' value={password} placeholder='密码' onChange={this.onInputChange} maxLength='16' />
                     <input type='password' name='passwordCfm' value={passwordCfm} className={pswNotCfm} placeholder='密码确认' onChange={this.onInputChange} maxLength='16' />

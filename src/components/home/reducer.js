@@ -1,30 +1,30 @@
 import {
-    LOGIN_START, LOGIN_SUCCESS, LOGIN_FAIL
+    FRAG_MESSAGE, FRAG_CONTACT, FRAG_MINE
 } from './actionTypes';
 
 const initState = {
-    logined: false,
-    uid: '',
-    name: '',
+    fragment: FRAG_MESSAGE,
+    message: [],
+    contact: [],
+    mine: {},
 };
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
-        case LOGIN_START:
+        case FRAG_MESSAGE:
             return {
                 ...state,
-                logined: false,
+                fragment: FRAG_MESSAGE,
             };
-        case LOGIN_SUCCESS:
-            return {
-                logined: true,
-                uid: action.uid,
-                name: action.name,
-            };
-        case LOGIN_FAIL:
+        case FRAG_CONTACT:
             return {
                 ...state,
-                logined: false,
+                fragment: FRAG_CONTACT,
+            };
+        case FRAG_MINE:
+            return {
+                ...state,
+                fragment: FRAG_MINE,
             };
         default:
             return state;
