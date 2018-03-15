@@ -2,9 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import * as actions from '../actions';
-import {
-    FRAG_MESSAGE, FRAG_CONTACT, FRAG_MINE
-} from '../actionTypes';
+import { FRAG_MESSAGE, FRAG_CONTACT, FRAG_MINE } from '../actionTypes';
 
 class BottomNav extends React.Component {
     constructor(props) {

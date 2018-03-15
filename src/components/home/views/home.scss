@@ -1,5 +1,13 @@
 $bottomNavHeight: 2em;
 
+.home {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding-bottom: $bottomNavHeight;
+    overflow-y: auto;
+}
+
 .home-bottom-nav {
     box-sizing: border-box;
     width: 100%;
@@ -7,6 +15,7 @@ $bottomNavHeight: 2em;
     position: fixed;
     bottom: 0;
     left: 0;
+    background-color: #fff;
     line-height: $bottomNavHeight;
     border-top: 1px solid #000;
     // display: flex;
@@ -18,6 +27,23 @@ $bottomNavHeight: 2em;
 
         &.selected {
             color: #03ee03;
+        }
+    }
+}
+
+.msg-list,
+.contact-list {
+    li {
+        box-sizing: border-box;
+        border-bottom: 1px solid #888888;
+
+        &:last-child {
+            // border-bottom: none;
+        }
+        a {
+            display: block;
+            padding: 2px 5px;
+            color: #000;
         }
     }
 }

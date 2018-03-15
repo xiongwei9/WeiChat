@@ -70,4 +70,23 @@ router.post('/login', (req, res) => {
     });
 });
 
+router.post('/logout', (req, res) => {
+    const uid = req.session.uid;
+    if (uid) {
+        req.session.destroy((err) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log(`logout - ${uid}`);
+        });
+    }
+    res.clearCookie('chat-sid');
+    res.clearCookie('uid');
+    res.clearCookie('name');
+    res.send(JSON.stringify({
+        ret: 0,
+        msg: '退出登录',
+    }));
+});
+
 module.exports = router;
