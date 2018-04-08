@@ -48,7 +48,7 @@ class Login extends React.Component {
     componentWillReceiveProps(nextProps) {
         // 登录成功
         if (nextProps.logined) {
-            this.props.history.push('/home');
+            this.props.history.replace('/home');
         }
     }
 

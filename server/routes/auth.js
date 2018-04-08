@@ -55,6 +55,7 @@ router.post('/login', (req, res) => {
         }
 
         req.session.uid = uid;
+        req.session.socketId = req.cookies.io;
         res.cookie('uid', uid);
         res.cookie('name', data[0].name);
         res.send(JSON.stringify({

@@ -6,6 +6,7 @@ import { view as Header } from './components/header/';
 import { view as Footer } from './components/footer/';
 import { view as Home } from './components/home/';
 import { view as Chat } from './components/chat/';
+import { view as Add } from './components/addFriend/';
 
 const Routes = () => (
     <BrowserRouter>
@@ -16,8 +17,9 @@ const Routes = () => (
         </div> */}
         <Switch>
             <Route path='/chat/:uid' component={Chat} />
-            <Route path='/' component={Home} />
-            <Route path='/login' component={Login} />
+            <Route path='/home/add' component={Add} />
+            <Route path='/home' component={Home} />
+            <Route path='/' component={Login} />
         </Switch>
     </BrowserRouter>
 );

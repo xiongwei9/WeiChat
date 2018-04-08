@@ -7,7 +7,7 @@ const CntItem = (props) => {
         <li>
             <Link to={link}>
                 <em>{props.name}</em>
-                {/* <span>  {props.desc}</span> */}
+                <span>（{props.desc}）</span>
             </Link>
         </li>
     );

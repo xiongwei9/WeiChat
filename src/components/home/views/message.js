@@ -9,10 +9,13 @@ class Message extends React.Component {
     }
 
     render() {
+        const noListTips = <p className='no-list-tips'>你还没有聊天记录，去找人聊天吧！</p>
+        const list = this.props.message.length > 0 ? this.props.message.map((value) => <MsgItem key={value.uid} {...value} />) : noListTips;
+
         return (
             <ul className='msg-list'>
                 {/* MsgItem list */}
-                {this.props.message.map((value) => <MsgItem key={value.uid} {...value} />)}
+                {list}
             </ul>
         );
     }

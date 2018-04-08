@@ -59,7 +59,7 @@ class Register extends React.Component {
                 throw new Error(data.msg);
             }
             Toast.info(`注册成功！`);
-            history.push('/');
+            history.goBack();
         }).catch((error) => {
             Toast.info(error);
         });

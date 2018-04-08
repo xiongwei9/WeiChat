@@ -1,6 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import BottomBar from './bottomBar';
+
+import './chat.scss';
+
 class Chat extends React.Component {
     constructor(props) {
         super(props);
@@ -8,13 +12,16 @@ class Chat extends React.Component {
 
     render() {
         return (
-            <ul>
-                {this.props.chatMsg.list.map((v) => {
-                    return (
-                        <li key={v.time}>{(v.mid ? `${this.props.chatMsg.name}：` : '你：') + v.data}</li>
-                    );
-                })}
-            </ul>
+            <div className='chat'>
+                <ul className='chat-list'>
+                    {this.props.chatMsg.list.map((v) => {
+                        return (
+                            <li key={v.time}>{(v.mid ? `${this.props.chatMsg.name}：` : '你：') + v.data}</li>
+                        );
+                    })}
+                </ul>
+                <BottomBar />
+            </div>
         );
     }
 }

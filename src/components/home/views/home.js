@@ -7,6 +7,7 @@ import Message from './message';
 import Contact from './contact';
 import Mine from './mine';
 import BottomNav from './bottomNav';
+import TopNav from './topNav';
 
 import './home.scss';
 
@@ -20,6 +21,7 @@ class Home extends React.Component {
         const fragContent = fragment === FRAG_MESSAGE ? <Message /> : fragment === FRAG_CONTACT ? <Contact /> : fragment === FRAG_MINE ? <Mine /> : null;
         return (
             <div className='home'>
+                <TopNav />
                 {fragContent}
                 <BottomNav />
             </div>

@@ -1,5 +1,7 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import ReduxThunk from 'redux-thunk';
+
+import socketStoreEnhancer from './lib/socketStoreEnhancer/';
 
 import { reducer as authReducer } from './components/auth/';
 import { reducer as homeReducer } from './components/home/';
@@ -10,6 +12,13 @@ const reducer = combineReducers({
     home: homeReducer,
 });
 
-const middlewares = [ReduxThunk];
+const middlewares = [
+    ReduxThunk,
+];
 
-export default createStore(reducer, initState, applyMiddleware(...middlewares));
+const storeEnhancers = compose(
+    applyMiddleware(...middlewares),
+    socketStoreEnhancer,
+);
+
+export default createStore(reducer, initState, storeEnhancers);
