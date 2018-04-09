@@ -10,7 +10,7 @@ class TopNav extends React.Component {
         return (
             <div className="home-top-nav">
                 <h2>主页</h2>
-                <Link className="add-friend" to="/home/add">+</Link>
+                <Link to="/home/add">+</Link>
             </div>
         );
     }

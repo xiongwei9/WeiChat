@@ -1,12 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { addFriend } from '../../../lib/socketStoreEnhancer/actions';
+
+import './index.scss';
 
 class AddFriend extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             uid: '',
+            userList: [],
         };
         this.onInputChange = this.onInputChange.bind(this);
+        this.onClickUserList = this.onClickUserList.bind(this);
     }
 
     onInputChange(e) {
@@ -18,8 +25,10 @@ class AddFriend extends React.Component {
     }
 
     search(uid) {
-        console.log(uid);
         if (!uid) {
+            this.setState({
+                userList: [],
+            });
             return;
         }
         fetch('/api/searchUser', {
@@ -38,21 +47,52 @@ class AddFriend extends React.Component {
             if (data.ret) {
                 return;
             }
-            console.log(data);
+            this.setState({
+                userList: data.data,
+            });
+        });
+    }
+
+    onClickUserList(e) {
+        // const history = this.props.history;
+        this.props.mAddFriend({
+            fromUid: this.props.uid,
+            uid: e.target.dataset['uid'],
+            msg: '',
         });
     }
 
     render() {
-        return (
-            <div class="add-friend">
-                <p>添加朋友</p>
-                <input type="text" placeholder="输入新好友的账号" onChange={this.onInputChange} value={this.state.uid}/>
-                <ul>
+        const lis = this.state.userList.map((v) => (
+            <li key={v.uid} onClick={this.onClickUserList} data-uid={v.uid}>
+                {v.name}<span>{v.uid}</span>
+            </li>
+        ));
 
-                </ul>
+        return (
+            <div className="add-friend">
+                <p>添加新朋友</p>
+                <div className="list">
+                    <input type="text" placeholder="输入新朋友的账号" onChange={this.onInputChange} value={this.state.uid}/>
+                    <ul>
+                        {lis}
+                    </ul>
+                </div>
             </div>
         );
     }
 }
 
-export default AddFriend;
+const mapStateToProps = (state, ownProps) => ({
+    uid: state.auth.uid,
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    mAddFriend(data) {
+        dispatch(addFriend({
+            ...data,
+        }));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddFriend);

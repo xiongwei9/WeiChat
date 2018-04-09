@@ -42,7 +42,7 @@ const loginRequest = (username, password) => (dispatch) => {
             dispatch(loginFail(data.msg));
             return;
         }
-        dispatch(loginSuccess(data));
+        dispatch(loginSuccess(data.data));
     }).catch((error) => {
         dispatch(loginFail(error));
     });

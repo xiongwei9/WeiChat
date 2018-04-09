@@ -61,6 +61,10 @@ router.post('/login', (req, res) => {
         res.send(JSON.stringify({
             ret: 0,
             msg: `登录成功`,
+            data: {
+                uid,
+                name: data[0].name,
+            },
         }));
     }).catch((err) => {
         console.log(err);

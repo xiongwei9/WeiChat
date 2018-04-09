@@ -49,6 +49,7 @@ import {
 //         imgUrl: '',
 //         desc: '我是谁？我在哪里？我要干尼玛？'
 //     }],
+//     // delete mine
 //     mine: {
 //         uid: 'xiongwei',
 //         name: 'xiongwei.zhu',

@@ -1,0 +1,46 @@
+.add-friend {
+    padding: 2em 1em;
+    p {
+        font-size: 1.2em;
+        color: #666;
+        font-style: italic;
+        margin-bottom: .5em;
+    }
+    
+    .list {
+        position: relative;
+        width: 100%;
+    }
+    input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: .5em;
+        border: 1px #666 solid;
+        font-size: 1em;
+    }
+    ul {
+        box-sizing: border-box;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        border: 1px #888 solid;
+        border-top: none;
+        border-bottom: none;
+
+        li {
+            padding: 5px;
+            border-bottom: 1px #888 solid;
+
+            span {
+                color: #666;
+                font-style: italic;
+                padding-left: 5px;
+            }
+            &:hover {
+                background: #5D98CC;
+                color: #fff;
+            }
+        }
+    }
+}

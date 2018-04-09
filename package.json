@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",
+    "devServer": "cross-env NODE_ENV=development node ./server/index.js",
     "server": "node ./server/index.js"
   },
   "repository": {
@@ -55,6 +56,7 @@
     "style-loader": "^0.20.3",
     "uglifyjs-webpack-plugin": "^1.2.3",
     "webpack": "^3.11.0",
+    "webpack-dev-middleware": "^2.0.6",
     "webpack-dev-server": "^2.11.2"
   }
 }

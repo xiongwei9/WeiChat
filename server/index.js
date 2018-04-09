@@ -12,6 +12,19 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+// 使用webpack-dev-middleware使前端开发（热模块加载）的同时，随时随地调用后端api与socket.io
+// 似乎不会自动热加载，需要到浏览器手动刷新页面
+if (process.env.NODE_ENV === 'development') {
+    console.log('development');
+    const webpack = require('webpack');
+    const webpackDevMiddleware = require('webpack-dev-middleware');
+    const config = require('../webpack.config');
+    const compiler = webpack(config);
+    app.use(webpackDevMiddleware(compiler, {
+        publicPath: config.output.publicPath,
+    }));
+}
+
 // 解析请求体
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -44,6 +57,11 @@ app.use('/api', userApi);
 
 // socket.io监听
 socketApi(io);
+
+// 404
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+});
 
 // 启动服务器
 const server = http.listen(8081, () => {
