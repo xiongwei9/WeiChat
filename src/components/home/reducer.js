@@ -2,6 +2,12 @@ import {
     FRAG_MESSAGE, FRAG_CONTACT, FRAG_MINE
 } from './actionTypes';
 
+import { actionTypes as socketActionTypes } from '../../lib/socketStoreEnhancer';
+
+const ROLE = {
+    ME: 0,
+    FRIEND: 1,
+};
 // const initState = {
 //     fragment: FRAG_MESSAGE,
 //     message: [{
@@ -81,6 +87,46 @@ const reducer = (state = initState, action) => {
             return {
                 ...state,
                 fragment: FRAG_MINE,
+            };
+        case socketActionTypes.STORE_ADD_FRIEND:
+            return {
+                ...state,
+                contact: [
+                    ...state.contact, 
+                    {
+                        uid: action.fromUid,
+                        name: action.fromName,
+                        imgUrl: '',
+                        desc: action.fromDescs,
+                    },
+                ],
+            };
+        case socketActionTypes.STORE_ADD_MSG:
+            let index = -1;
+            let message = null;
+            for ([i, v] of state.message) {
+                if (v.uid === action.fromUid) {
+                    index = i;
+                }
+            }
+            if (index < 0) {
+                message = {
+                    uid: action.fromUid,
+                    name: 'xxx',
+                    list: [],
+                };
+            } else {
+                message = state.message.splice(index, 1);
+            }
+            message.list.push({
+                mid: ROLE.FRIEND,
+                data: action.msg,
+                time: new Date().getTime(),
+            });
+            newMessage = [ message, ...state.message ];
+            return {
+                ...state,
+                message: newMessage,
             };
         default:
             return state;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { addFriend } from '../../../lib/socketStoreEnhancer/actions';
+import { actions as socketActions } from '../../../lib/socketStoreEnhancer/';
 
 import './index.scss';
 
@@ -55,7 +55,7 @@ class AddFriend extends React.Component {
 
     onClickUserList(e) {
         // const history = this.props.history;
-        this.props.mAddFriend({
+        this.props.addFriend({
             fromUid: this.props.uid,
             uid: e.target.dataset['uid'],
             msg: '',
@@ -88,8 +88,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    mAddFriend(data) {
-        dispatch(addFriend({
+    addFriend(data) {
+        dispatch(socketActions.addFriend({
             ...data,
         }));
     },

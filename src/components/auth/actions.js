@@ -2,6 +2,8 @@ import {
     LOGIN_REQUEST, LOGIN_START, LOGIN_SUCCESS, LOGIN_FAIL 
 } from './actionTypes';
 
+import { actions as socketActions } from '../../lib/socketStoreEnhancer/';
+
 import { view as Modal } from '../modal/';
 
 const loginStart = () => ({
@@ -33,8 +35,9 @@ const loginRequest = (username, password) => (dispatch) => {
         body: `uid=${username}&password=${password}`,
     }).then((res) => {
         if (res.status !== 200) {
-            dispatch(loginFail(res.statusText));
-            return;
+            // dispatch(loginFail(res.statusText));
+            // return;
+            throw res.statusText;
         }
         return res.json();
     }).then((data) => {
@@ -42,6 +45,7 @@ const loginRequest = (username, password) => (dispatch) => {
             dispatch(loginFail(data.msg));
             return;
         }
+        dispatch(socketActions.socketLogin(data.data.uid, data.data.name));
         dispatch(loginSuccess(data.data));
     }).catch((error) => {
         dispatch(loginFail(error));

@@ -51,12 +51,12 @@ class Register extends React.Component {
             body: `uid=${uid}&name=${name}&password=${password}&desc=${desc}`,
         }).then((resObj) => {
             if (resObj.status !== 200) {
-                throw new Error(resObj.statusText);
+                throw resObj.statusText;
             }
             return resObj.json();
         }).then((data) => {
             if (data.ret !== 0) {
-                throw new Error(data.msg);
+                throw data.msg;
             }
             Toast.info(`注册成功！`);
             history.goBack();

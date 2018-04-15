@@ -34,8 +34,7 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 app.use('/static', express.static('./static'));
 
 // 配置cookie解析器和session
-app.use(cookieParser());
-app.use(session({
+const mSession = session({
     secret: 'come on! chat together',
     name: 'chat-sid',
     resave: false,
@@ -45,9 +44,11 @@ app.use(session({
         secure: false,
         maxAge: null,
     },
-}));
+});
+app.use(cookieParser());
+app.use(mSession);
 app.use((req, res, next) => {
-    console.log(`session: ${req.sessionID} | socketID: ${req.cookies.io}`);
+    // console.log(`session: ${req.sessionID} | socketID: ${req.cookies.io}`);
     next();
 });
 
@@ -56,7 +57,7 @@ app.use('/api', authApi);
 app.use('/api', userApi);
 
 // socket.io监听
-socketApi(io);
+socketApi(io, mSession);
 
 // 404
 app.get('*', (req, res) => {
