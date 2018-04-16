@@ -67,7 +67,12 @@ const ROLE = {
 const initState = {
     fragment: FRAG_MESSAGE,
     message: [],
-    contact: [],
+    contact: [{
+                uid: 'SuperBaby',
+                name: '超尼玛币',
+                imgUrl: '',
+                descs: '我是谁？我在哪里？我要干尼玛？'
+            }],
     mine: {},
 };
 
@@ -97,36 +102,58 @@ const reducer = (state = initState, action) => {
                         uid: action.fromUid,
                         name: action.fromName,
                         imgUrl: '',
-                        desc: action.fromDescs,
+                        descs: action.fromDescs,
                     },
                 ],
             };
         case socketActionTypes.STORE_ADD_MSG:
             let index = -1;
             let message = null;
-            for ([i, v] of state.message) {
-                if (v.uid === action.fromUid) {
+            for (let i = 0; i < state.message.length; i++) {
+                if (state.message[i].uid === action.fromUid) {
                     index = i;
+                    break;
                 }
             }
             if (index < 0) {
+                let name = '';
+                for (let cnt of state.contact) {
+                    if (cnt.uid === action.fromUid) {
+                        name = cnt.name;
+                    }
+                }
                 message = {
                     uid: action.fromUid,
-                    name: 'xxx',
+                    name,
                     list: [],
                 };
             } else {
-                message = state.message.splice(index, 1);
+                message = state.message.splice(index, 1)[0];
+                message = { ...message };  // 改引用，否则不刷新
             }
             message.list.push({
                 mid: ROLE.FRIEND,
                 data: action.msg,
                 time: new Date().getTime(),
             });
-            newMessage = [ message, ...state.message ];
+
+            const newMessage = [ message, ...state.message ];
             return {
                 ...state,
                 message: newMessage,
+            };
+
+        case socketActionTypes.STORE_FRIEND_LIST:
+            return {
+                ...state,
+                contact: action.list,
+            };
+        
+        case socketActionTypes.STORE_MSG_LIST:
+            
+            return {
+                ...state,
+
             };
         default:
             return state;

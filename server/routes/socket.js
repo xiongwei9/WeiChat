@@ -25,6 +25,40 @@ const socketApi = (io, session) => {
             socketList.push(socket);
             socket.handshake.session.auth = auth;
             socket.handshake.session.save();
+
+            // 发送好友列表
+            const friendSql = `
+                select friend_uid as uid, name, descs
+                from user, friend
+                where friend.uid='${auth.uid}' and friend.friend_uid=user.uid;
+            `;
+            // console.log(friendSql);
+            mysql.queryPromise(friendSql)
+            .then((res) => {
+                if (!res) {
+                    res = [];
+                }
+                socket.emit('FRIEND_LIST', res);
+            })
+            .catch((err) => {
+                console.log(`SELECT friend list ERROR`);
+                console.log(err);
+            });
+            // 发送聊天列表
+            const msgSql = `
+                select from_uid as uid, msg as data, sendTime as time
+                from chat_msg
+                where uid='${auth.uid}';
+            `;
+            mysql.queryPromise(msgSql)
+            .then((res) => {
+                socket.emit('MSG_LIST', res);
+            })
+            .catch((err) => {
+                console.log(`SELECT chat_msg list ERROR`);
+                console.log(err);
+            });
+
             console.log(`LOGIN: ${JSON.stringify(auth)}`);
         });
         socket.on('LOGOUT', (auth) => {
@@ -43,15 +77,16 @@ const socketApi = (io, session) => {
             }
             mysql.queryPromise(`select * from friend where uid='${fromUid}' and friend_id='${uid}'`)
             .then((res) => {
-                if (res) {  
+                if (res) {
                     /* 已添加好友 */
                     throw `${fromUid} & ${uid} are already friends...`;
                 }
                 return mysql.queryPromise(`select name, descs from user where uid = '${fromUid}'`);
             })
             .then((res) => {
-                const fromName = res.name;
-                const fromDescs = res.descs;
+                console.log(res);
+                const fromName = res[0].name;
+                const fromDescs = res[0].descs;
                 socketTarget.emit('ADD_FRIEND', {
                     fromUid,
                     fromName,
@@ -84,8 +119,8 @@ const socketApi = (io, session) => {
             .then((res) => {
                 socketTarget.emit('ACCEPT_FRIEND', {
                     uid,
-                    name: res.name,
-                    descs: res.descs,
+                    name: res[0].name,
+                    descs: res[0].descs,
                     fromUid,
                 });
                 console.log('ACCEPT_FRIEND: ok');
@@ -98,7 +133,7 @@ const socketApi = (io, session) => {
 
         /* 发送聊天消息 */
         socket.on('CHAT_MSG', (data) => {
-            // const { fromUid, uid, msg } = data;
+            const { fromUid, uid, msg } = data;
             const socketTarget = findSocket(socketList, uid);
             socketTarget.emit('CHAT_MSG', {
                 ...data,
@@ -106,11 +141,11 @@ const socketApi = (io, session) => {
             
             const sql = `
                 insert into chat_msg (from_uid, uid, msg, sendTime)
-                values('${data.fromUid}', '${data.uid}', '${data.msg}', ${new Date().getTime()});
+                values('${fromUid}', '${uid}', '${msg}', ${new Date().getTime()});
             `;
             mysql.queryPromise(sql)
             .then((res) => {
-                console.log(`CHAT_MSG: ${data.fromUid} -> ${data.uid}: ${data.msg}`);
+                console.log(`CHAT_MSG: ${fromUid} -> ${uid}: ${msg}`);
             })
             .catch((err) => {
                 console.log(`CHAT_MSG: ERROR`);

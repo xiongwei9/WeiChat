@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { actions as socketActions } from '../../../lib/socketStoreEnhancer/';
+
 class BottomBar extends React.Component {
     constructor(props) {
         super(props);
@@ -19,7 +21,14 @@ class BottomBar extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        alert(this.state.text);
+        this.props.sendMsg({
+            fromUid: this.props.uid,
+            uid: this.props.to,
+            msg: this.state.text,
+        });
+        this.setState({
+            text: '',
+        });
     }
 
     render() {
@@ -34,4 +43,14 @@ class BottomBar extends React.Component {
     }
 }
 
-export default BottomBar;
+const mapStateToProps = (state, ownProps) => ({
+    uid: state.auth.uid,
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    sendMsg(data) {
+        dispatch(socketActions.chatMsg(data));
+    },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BottomBar);

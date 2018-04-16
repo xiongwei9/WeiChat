@@ -1,24 +1,29 @@
-import {
-    SOCKET_LOGIN,  SOCKET_LOGOUT, SOCKET_ADD_FRIEND, SOCKET_ACCEPT_ADD,
-} from './actionTypes';
+import * as actionTypes from './actionTypes';
 
 const socketLogin = (uid, name) => ({
-    type: SOCKET_LOGIN,
+    type: actionTypes.SOCKET_LOGIN,
     uid,
     name,
 });
 
 const addFriend = ({fromUid, uid, msg}) => ({
-    type: SOCKET_ADD_FRIEND,
+    type: actionTypes.SOCKET_ADD_FRIEND,
     uid,
     fromUid,
     msg,
 });
 
 const acceptFriend = ({fromUid, uid}) => ({
-    type: SOCKET_ACCEPT_ADD,
+    type: actionTypes.SOCKET_ACCEPT_ADD,
     fromUid,
     uid,
 });
 
-export { socketLogin, addFriend, acceptFriend };
+const chatMsg = ({fromUid, uid, msg}) => ({
+    type: actionTypes.SOCKET_CHAT_MSG,
+    fromUid,
+    uid,
+    msg,
+})
+
+export { socketLogin, addFriend, acceptFriend, chatMsg };

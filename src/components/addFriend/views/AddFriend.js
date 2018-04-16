@@ -60,6 +60,10 @@ class AddFriend extends React.Component {
             uid: e.target.dataset['uid'],
             msg: '',
         });
+        this.setState({
+            uid: '',
+            userList: [],
+        });
     }
 
     render() {

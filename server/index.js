@@ -61,7 +61,7 @@ socketApi(io, mSession);
 
 // 404
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../dist/index.html'));
+    // res.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
 
 // 启动服务器

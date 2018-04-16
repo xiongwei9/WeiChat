@@ -32,6 +32,14 @@ const enhancer = (store, socket) => {
             ...res,
         });
     });
+
+    /* 监听-朋友列表 */
+    socket.on('FRIEND_LIST', res => {
+        store.dispatch({
+            type: actionTypes.STORE_FRIEND_LIST,
+            list: res,
+        });
+    });
 };
 
 export default enhancer;

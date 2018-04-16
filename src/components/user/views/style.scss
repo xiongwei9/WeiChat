@@ -1,0 +1,33 @@
+.user {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 50px 1em;
+    // position: relative;
+    h1 {
+        font-size: 2em;
+        margin-bottom: 5px;
+    }
+    h2 {
+        color: grey;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+    p {
+        font-size: 1em;
+    }
+
+    .send-msg {
+        position: fixed;
+        bottom: 15px;
+        left: 5%;
+        box-sizing: border-box;
+        display: block;
+        width: 90%;
+        padding: .4em 0;
+        border-radius: .2em;
+        text-align: center;
+        background: #008000;
+        color: #fff;
+    }
+}

@@ -36,6 +36,14 @@ const middleware = (store, socket) => {
                     name: action.name,
                 });
                 break;
+            case actionTypes.SOCKET_CHAT_MSG:
+                /* 发送文本消息 */
+                socket.emit('CHAT_MSG', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    msg: action.msg,
+                });
+                break;
             default:
                 originalDispatch(action);
         }
