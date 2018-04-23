@@ -5,6 +5,7 @@ export const SOCKET_ADD_FRIEND = Symbol('ADD_FRIEND');
 export const SOCKET_ACCEPT_ADD = Symbol('ACCEPT_ADD');
 
 export const SOCKET_CHAT_MSG = Symbol('SOCKET_CHAT_MSG');
+export const SOCKET_CHAT_FILE = Symbol('SOCKET_CHAT_FILE');
 
 export const STORE_ADD_FRIEND = Symbol('STORE_ADD_FRIEND');
 export const STORE_ADD_MSG = Symbol('STORE_ADD_MSG');

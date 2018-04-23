@@ -8,92 +8,78 @@ const ROLE = {
     ME: 0,
     FRIEND: 1,
 };
-// const initState = {
-//     fragment: FRAG_MESSAGE,
-//     message: [{
-//         uid: 'liyl',
-//         name: '李云龙',
-//         list: [{
-//             mid: 0,
-//             data: '你好啊，我是李云龙！',
-//             time: 1,
-//         }, {
-//             mid: 1,
-//             data: '你好，很高兴认识你',
-//             time: 2,
-//         }],
-//     }, {
-//         uid: 'eryz',
-//         name: '二营长',
-//         list: [{
-//             mid: 1,
-//             data: '报告二营长',
-//             time: 3,
-//         }, {
-//             mid: 0,
-//             data: '说',
-//             time: 4,
-//         }, {
-//             mid: 0,
-//             data: '有没有办法干他一炮',
-//             time: 5,
-//         }],
-//     }],
-//     contact: [{
-//         uid: 'liyl',
-//         name: '李云龙',
-//         imgUrl: '',
-//         desc: '想办法干他一炮',
-//     }, {
-//         uid: 'eryz',
-//         name: '二营长',
-//         imgUrl: '',
-//         desc: '哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈',
-//     }, {
-//         uid: 'SuperBaby',
-//         name: '超尼玛币',
-//         imgUrl: '',
-//         desc: '我是谁？我在哪里？我要干尼玛？'
-//     }],
-//     // delete mine
-//     mine: {
-//         uid: 'xiongwei',
-//         name: 'xiongwei.zhu',
-//         imgUrl: '',
-//         desc: 'Hello, world',
-//     },
-// };
+/******************** state demo ********************
+const initState = {
+    fragment: FRAG_MESSAGE,
+    message: [{
+        uid: 'liyl',
+        name: '李云龙',
+        list: [{
+            mid: 0,
+            data: '你好啊，我是李云龙！',
+            time: 1,
+        }, {
+            mid: 1,
+            data: '你好，很高兴认识你',
+            time: 2,
+        }],
+    }],
+    contact: [{
+        uid: 'liyl',
+        name: '李云龙',
+        imgUrl: '',
+        desc: '想办法干他一炮',
+    }],
+    // delete mine
+    mine: {
+        uid: 'xiongwei',
+        name: 'xiongwei.zhu',
+        imgUrl: '',
+        desc: 'Hello, world',
+    },
+};
+****************************************/
 
 const initState = {
     fragment: FRAG_MESSAGE,
-    message: [],
-    contact: [{
-                uid: 'SuperBaby',
-                name: '超尼玛币',
-                imgUrl: '',
-                descs: '我是谁？我在哪里？我要干尼玛？'
-            }],
+    message: [{
+        uid: 'liyl',
+        name: '李云龙',
+        list: [{
+            mid: 0,
+            data: '你好啊，我是李云龙！',
+            time: 1,
+        }, {
+            mid: 1,
+            data: '你好，很高兴认识你',
+            time: 2,
+        }],
+    }],
+    contact: [],
     mine: {},
 };
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
-        case FRAG_MESSAGE:
+        case FRAG_MESSAGE: {
             return {
                 ...state,
                 fragment: FRAG_MESSAGE,
             };
-        case FRAG_CONTACT:
+        }
+        case FRAG_CONTACT: {
             return {
                 ...state,
                 fragment: FRAG_CONTACT,
             };
-        case FRAG_MINE:
+        }
+        case FRAG_MINE: {
             return {
                 ...state,
                 fragment: FRAG_MINE,
             };
-        case socketActionTypes.STORE_ADD_FRIEND:
+        }
+        case socketActionTypes.STORE_ADD_FRIEND: {
             return {
                 ...state,
                 contact: [
@@ -106,7 +92,8 @@ const reducer = (state = initState, action) => {
                     },
                 ],
             };
-        case socketActionTypes.STORE_ADD_MSG:
+        }
+        case socketActionTypes.STORE_ADD_MSG: {
             let index = -1;
             let message = null;
             for (let i = 0; i < state.message.length; i++) {
@@ -120,6 +107,7 @@ const reducer = (state = initState, action) => {
                 for (let cnt of state.contact) {
                     if (cnt.uid === action.fromUid) {
                         name = cnt.name;
+                        break;
                     }
                 }
                 message = {
@@ -132,7 +120,7 @@ const reducer = (state = initState, action) => {
                 message = { ...message };  // 改引用，否则不刷新
             }
             message.list.push({
-                mid: ROLE.FRIEND,
+                mid: action.mid === 'F' ? ROLE.FRIEND : ROLE.ME,
                 data: action.msg,
                 time: new Date().getTime(),
             });
@@ -142,19 +130,28 @@ const reducer = (state = initState, action) => {
                 ...state,
                 message: newMessage,
             };
-
-        case socketActionTypes.STORE_FRIEND_LIST:
+        }
+        case socketActionTypes.STORE_FRIEND_LIST: {
             return {
                 ...state,
                 contact: action.list,
             };
-        
-        case socketActionTypes.STORE_MSG_LIST:
-            
+        }
+        case socketActionTypes.STORE_MSG_LIST: {
+            const message = action.message;
+            for (let msg of message) {
+                for (let cnt of state.contact) {
+                    if (msg.uid === cnt.uid) {
+                        msg.name = cnt.name;
+                        break;
+                    }
+                }
+            }
             return {
                 ...state,
-
+                message,
             };
+        }
         default:
             return state;
     }

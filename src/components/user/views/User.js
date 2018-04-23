@@ -17,7 +17,7 @@ class User extends React.Component {
                 <h2>账号：{this.props.user.uid}</h2>
                 <p>描述：{this.props.user.descs}</p>
 
-                <Link to={link} className="send-msg">发消息</Link>
+                <Link to={link} className="send-msg" replace>发消息</Link>
             </div>
         );
     }

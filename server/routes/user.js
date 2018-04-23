@@ -7,7 +7,7 @@ router.post('/searchUser', (req, res) => {
     const { uid } = req.body;
     const sql = `
         select uid, name, descs from user
-        where uid like '%${uid}%';
+        where uid like '%${uid}%' and uid != '${req.session.uid}';
     `;
     mysql.queryPromise(sql).then((data) => {
         return res.send({

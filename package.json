@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "build": "cross-env NODE_ENV=production webpack",
+    "watch": "cross-env NODE_ENV=production webpack --watch",
     "devServer": "cross-env NODE_ENV=development node ./server/index.js",
     "server": "node ./server/index.js"
   },

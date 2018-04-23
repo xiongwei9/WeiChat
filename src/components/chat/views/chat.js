@@ -14,8 +14,19 @@ class Chat extends React.Component {
         let list = null;
         if (this.props.chatMsg) {
             list = this.props.chatMsg.list.map((v) => {
+                let content = null;
+                switch (v.type) {
+                    case 1:
+                        break;
+                    default:
+                        content = <p className='msg-content'>{v.data}</p>
+                }
                 return (
-                    <li key={v.time}>{(v.mid ? `${this.props.chatMsg.name}：` : '你：') + v.data}</li>
+                    <li key={v.time} className={v.mid ? 'friend' : 'me'}>
+                        {/* <span className='username'>{(v.mid ? `${this.props.chatMsg.name}` : '你')}</span> */}
+                        {/* <p className='msg-content'>{v.data}</p> */}
+                        {content}
+                    </li>
                 );
             });
         }

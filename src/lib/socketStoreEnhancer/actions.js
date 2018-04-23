@@ -24,6 +24,14 @@ const chatMsg = ({fromUid, uid, msg}) => ({
     fromUid,
     uid,
     msg,
-})
+});
 
-export { socketLogin, addFriend, acceptFriend, chatMsg };
+const chatFile = (data) => ({
+    type: actionTypes.SOCKET_CHAT_FILE,
+    // fromUid,
+    // uid,
+    // fileData,
+    ...data
+});
+
+export { socketLogin, addFriend, acceptFriend, chatMsg, chatFile };

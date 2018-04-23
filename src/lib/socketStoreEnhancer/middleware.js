@@ -43,6 +43,21 @@ const middleware = (store, socket) => {
                     uid: action.uid,
                     msg: action.msg,
                 });
+                store.dispatch({
+                    type: actionTypes.STORE_ADD_MSG,
+                    fromUid: action.uid,
+                    uid: action.fromUid,
+                    msg: action.msg,
+                });
+                break;
+            case actionTypes.SOCKET_CHAT_FILE:
+                socket.emit('CHAT_FILE', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    fileData: action.fileData,
+                    fileName: action.fileName,
+                    fileType: action.fileType,
+                });
                 break;
             default:
                 originalDispatch(action);

@@ -30,6 +30,7 @@ const enhancer = (store, socket) => {
         store.dispatch({
             type: actionTypes.STORE_ADD_MSG,
             ...res,
+            mid: 'F',  // 标记发送方，'F'为朋友方发送
         });
     });
 
@@ -38,6 +39,14 @@ const enhancer = (store, socket) => {
         store.dispatch({
             type: actionTypes.STORE_FRIEND_LIST,
             list: res,
+        });
+    });
+
+    /* 监听-聊天历史 */
+    socket.on('MESSAGE_LIST', res => {
+        store.dispatch({
+            type: actionTypes.STORE_MSG_LIST,
+            message: res,
         });
     });
 };

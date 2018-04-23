@@ -3,9 +3,44 @@ $bottomBarHeight: 3em;
 .chat {
     .chat-list {
         padding: 1px 5px $bottomBarHeight;
-        li {
-            margin: 5px 0;
-            color: #333;
+        color: #333;
+        
+        .me,
+        .friend {
+            box-sizing: border-box;
+            overflow: hidden;
+            clear: both;
+            margin: 8px 0;
+
+            .username {
+                display: block;
+                padding: 0 5px 5px;
+            }
+            .msg-content {
+                max-width: 85%;
+                background: #fff;
+                padding: 5px;
+                border: 1px solid #eeeeee;
+                border-radius: 5px;
+            }
+        }
+        .friend {
+            .username {
+                text-align: left;
+            }
+            .msg-content {
+                float: left;
+            }
+        }
+        .me {
+            .username {
+                text-align: right;
+            }
+            .msg-content {
+                float: right;
+                // background: #53be53;
+                background: #07e607;
+            }
         }
     }
 
@@ -13,6 +48,7 @@ $bottomBarHeight: 3em;
         box-sizing: border-box;
         width: 100%;
         height: $bottomBarHeight;
+        border-top: 1px solid #eee;
         position: fixed;
         left: 0;
         bottom: 0;
@@ -20,7 +56,22 @@ $bottomBarHeight: 3em;
         form {
             width: 100%;
             height: 100%;
-            font-size: 1.2em;
+            font-size: 1em;
+
+            button {
+                position: absolute;
+                top: 14px;
+                right: 0;
+                box-sizing: border-box;
+                display: block;
+                width: 1.5em;
+                height: 1.5em;
+                margin: 0 5px;
+                border: 1px solid #999;
+                border-radius: 50%;
+                color: #999;
+                background: #eee;
+            }
 
             input {
                 font-size: 1em;
@@ -28,7 +79,54 @@ $bottomBarHeight: 3em;
                 width: 100%;
                 min-height: 100%;
                 padding: 0 .5em;
-                // border-right: 3em solid transparent;
+                // border-bottom: 1px solid #00ff00;
+                border-right: 20px solid transparent;
+            }
+        }
+    }
+
+    .more {
+        position: absolute;
+        top: -100%;
+        left: 0;
+        box-sizing: border-box;
+        display: none;
+        width: 100%;
+        height: 100%;
+        transition: all .3s;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        align-items: center;
+        background: rgba($color: #eeeeee, $alpha: .8);
+        &.show {
+            top: 0;
+        }
+
+        $itemSize: 3.5em;
+
+        .more-item {
+            position: relative;
+            box-sizing: border-box;
+            display: block;
+            width: $itemSize;
+            height: $itemSize;
+            border: 1px solid #dddddd;
+            border-radius: .5em;
+            font-size: 1em;
+            line-height: $itemSize;
+            text-align: center;
+            background: #fdfdfd;
+
+            & > input {
+                position: absolute;
+                left: 0;
+                top: 0;
+                display: block;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                opacity: 0;
             }
         }
     }
