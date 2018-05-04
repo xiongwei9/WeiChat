@@ -33,7 +33,6 @@ class BottomBar extends React.Component {
 
     onFileChange(e) {
         const target = e.target;
-        console.log('file change: ' + target.files.length);
         const file = target.files[0];
         if (file.size > 10 * 1024 * 1024) {
             Toast.info('文件不能大于10MB');
@@ -50,6 +49,7 @@ class BottomBar extends React.Component {
                 fileName: file.name,
                 fileType: file.type,
             });
+            this.fileInputForm.reset();
         };
     }
 
@@ -79,7 +79,9 @@ class BottomBar extends React.Component {
                 <div className={moreClass} onClick={this.onMoreBtnClick}>
                     <a className='more-item'>
                         file
-                        <input type='file' onChange={this.onFileChange} ref={input => this.fileInput = input} />
+                        <form ref={input => this.fileInputForm = input}>
+                            <input type='file' onChange={this.onFileChange} ref={input => this.fileInput = input} />
+                        </form>
                     </a>
                     <input className='more-item' type='button' onClick={null} value='video' />
                 </div>

@@ -14,6 +14,7 @@ const loginSuccess = (authInfo) => ({
     type: LOGIN_SUCCESS,
     uid: authInfo.uid,
     name: authInfo.name,
+    descs: authInfo.descs,
 });
 
 const loginFail = (message) => {

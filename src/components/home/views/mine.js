@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 class Mine extends React.Component {
     constructor(props) {
@@ -7,9 +8,23 @@ class Mine extends React.Component {
 
     render() {
         return (
-            <div>mine</div>
+            <div className='mine'>
+                <h1>{this.props.user.name}</h1>
+                <h2>账号：{this.props.user.uid}</h2>
+                <p>描述：{this.props.user.descs}</p>
+
+                {/* <Link to={link} className="send-msg" replace>发消息</Link> */}
+            </div>
         );
     }
 }
 
-export default Mine;
+const mapStateToProps = (state, ownProps) => ({
+    user: {
+        name: state.auth.name,
+        uid: state.auth.uid,
+        descs: state.auth.descs,
+    },
+});
+
+export default connect(mapStateToProps, null)(Mine);

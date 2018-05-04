@@ -42,7 +42,7 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
     const { uid, password } = req.body;
     const sql = `
-        select uid, name from user
+        select uid, name, descs from user
         where uid = '${uid}' and password = '${password}';
     `;
     mysql.queryPromise(sql).then((data) => {
@@ -64,6 +64,7 @@ router.post('/login', (req, res) => {
             data: {
                 uid,
                 name: data[0].name,
+                descs: data[0].descs,
             },
         }));
     }).catch((err) => {

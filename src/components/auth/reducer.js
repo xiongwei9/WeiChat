@@ -6,6 +6,7 @@ const initState = {
     logined: false,
     uid: '',
     name: '',
+    descs: '',
 };
 
 const reducer = (state = initState, action) => {
@@ -20,6 +21,7 @@ const reducer = (state = initState, action) => {
                 logined: true,
                 uid: action.uid,
                 name: action.name,
+                descs: action.descs,
             };
         case LOGIN_FAIL:
             return {

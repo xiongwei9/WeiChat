@@ -21,7 +21,7 @@ const getMsgHistory = (socket, uid) => {
                 from chat_msg
                 where (from_uid='${id}' and uid='${uid}') or (uid='${id}' and from_uid='${uid}')
                 order by sendTime desc
-                limit 10;
+                limit 30;
             `));
         }
         return Promise.all(arr);
@@ -38,7 +38,7 @@ const getMsgHistory = (socket, uid) => {
                 messageItem.list.push({
                     mid: perFriend[i].fromUid === uid ? 0 : 1,
                     data: perFriend[i].msg,
-                    type: perFriend[i].msgType,
+                    msgType: perFriend[i].msgType,
                     time: perFriend[i].time * 1000,
                 });
             }
@@ -196,15 +196,14 @@ const socketApi = (io, session) => {
             const { fromUid, uid, fileData, fileName, fileType } = data;
             const socketTarget = socketMap.get(uid);
 
-            if (socketTarget) {
-                socketTarget.emit('CHAT_FILE', {
-                    ...data,
-                });
-            }
-
+            // 切出base64编码的前缀，如`data:image/jpeg;base64,`
+            // 保留下的则是真正的由文件本身的二进制串转换而成的字符串
+            const fileRealName = `${(new Date()).getTime()}.${fileName}`;
             const fileRealData = fileData.replace(new RegExp(`^data:${fileType};base64,`), '');
-            const filePath = path.resolve(__dirname, './temp', `${fileName}`);
+            const filePath = path.resolve(__dirname, '../static/temp', `${fileRealName}`);
+            // 把base64字符串转换成Buffer（即二进制串）
             const buf = Buffer.from(fileRealData, 'base64');
+            // 把二进制写入到文件中
             fs.writeFile(filePath, buf, (err) => {
                 if (err) {
                     console.log(`write file ${filePath} err`);
@@ -212,7 +211,87 @@ const socketApi = (io, session) => {
                     return;
                 }
                 console.log(`write to ${filePath} success`);
+                const msg = {
+                    fromUid,
+                    uid,
+                    msg: `/static/temp/${fileRealName}`,
+                    msgType: 1,
+                };
+                socket.emit('CHAT_FILE_SUCCESS', msg);
+                if (socketTarget) {
+                    socketTarget.emit('CHAT_FILE', msg);
+                }
+                const sql = `
+                    insert into chat_msg (from_uid, uid, msg, sendTime, msgType)
+                    values('${fromUid}', '${uid}', '/static/temp/${fileRealName}', ${parseInt(new Date().getTime() / 1000)}, 1);
+                `;
+                mysql.queryPromise(sql)
+                .then((res) => {
+                    console.log(`CHAT_MSG: ${fromUid} -> ${uid}: ${fileName}`);
+                })
+                .catch((err) => {
+                    console.log(`CHAT_MSG: ERROR`);
+                    console.log(err);
+                });
             });
+        });
+
+        /* 视频聊天请求 */
+        socket.on('VIDEO_REQ', (data) => {
+            const { fromUid, uid, offer } = data;
+            const socketTarget = socketMap.get(uid);
+
+            if (!socketTarget) {
+                socket.emit('VIDEO_RES', {
+                    // ret: -404,
+                    fromUid,
+                    uid,
+                    answer: '',
+                    msg: '用户不在线',
+                });
+                console.log(`VIDEO_REQ: ${uid} not online`);
+                return;
+            }
+            socketTarget.emit('VIDEO_REQ', {
+                ...data,
+                fromUid: uid,
+                uid: fromUid,
+            });
+            console.log(`- ${fromUid} => ${uid} video req`)
+        });
+
+        /* 视频聊天回应 */
+        socket.on('VIDEO_RES', (data) => {
+            const { fromUid, uid, offer } = data;
+            const socketTarget = socketMap.get(uid);
+
+            if (!socketTarget) {
+                socket.emit('VIDEO_RES', {
+                    fromUid,
+                    uid,
+                    msg: '用户已下线',
+                });
+                console.log(`VIDEO_RES: ${fromUid} offline`);
+                return;
+            }
+            socketTarget.emit('VIDEO_RES', {
+                ...data,
+                fromUid: uid,
+                uid: fromUid,
+            });
+            console.log(`- ${fromUid} => ${uid} video res`)
+        });
+
+        /* 交换ICE_CANDIDATE数据 */
+        socket.on('ICE_CANDIDATE', (resData) => {
+            const { fromUid, uid, data } = resData;
+            const socketTarget = socketMap.get(uid);
+
+            if (!socketTarget) {
+                return;
+            }
+            console.log(`- ${fromUid} => ${uid} iceCandidate`)
+            socketTarget.emit('ICE_CANDIDATE', { ...resData });
         });
 
         /* 断开WebSocket连接 */

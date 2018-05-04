@@ -1,0 +1,45 @@
+$topNavHeight: 3em;
+
+.header {
+    box-sizing: border-box;
+    width: 100%;
+    height: $topNavHeight;
+    // position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    line-height: $topNavHeight;
+    background-color: #333;
+    color: #fff;
+
+    .back {
+        position: absolute;
+        left: 0;
+        display: block;
+        padding: 0;
+        width: 2em;
+        // padding-left: 10px;
+    }
+
+    h2 {
+        max-width: 15em;
+        margin: 0 auto;
+        text-align: center;
+        font-weight: normal;
+        font-size: 1em;
+    }
+
+    a {
+        display: inline-block;
+        color: #fff;
+        width: 2em;
+        height: 100%;
+        text-align: center;
+        font-size: 1.2em;
+        position: absolute;
+        right: 5px;
+        top: 0;
+        // padding: 0 $topNavHeight / 2;
+    }
+}

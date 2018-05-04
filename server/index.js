@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 // 配置静态资源路由
 app.use(express.static(path.resolve(__dirname, '../dist')));
-app.use('/static', express.static('./static'));
+app.use('/static', express.static(path.resolve(__dirname, './static')));
 
 // 配置cookie解析器和session
 const mSession = session({

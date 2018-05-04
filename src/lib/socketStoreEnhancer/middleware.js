@@ -51,12 +51,37 @@ const middleware = (store, socket) => {
                 });
                 break;
             case actionTypes.SOCKET_CHAT_FILE:
+                /* 发送文件 */
                 socket.emit('CHAT_FILE', {
                     fromUid: action.fromUid,
                     uid: action.uid,
                     fileData: action.fileData,
                     fileName: action.fileName,
                     fileType: action.fileType,
+                });
+                break;
+            case actionTypes.SOCKET_VIDEO_REQ:
+                /* 发送视频聊天请求 */
+                socket.emit('VIDEO_REQ', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    offer: action.offer,
+                });
+                break;
+            case actionTypes.SOCKET_VIDEO_RES:
+                /* 发送视频聊天回应 */
+                socket.emit('VIDEO_RES', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    answer: action.answer,
+                });
+                break;
+            case actionTypes.SOCKET_ICECANDIDATE:
+                /* 交换RTCPeerConnection过程中的IceCandidate */
+                socket.emit('ICE_CANDIDATE', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    data: action.data,
                 });
                 break;
             default:

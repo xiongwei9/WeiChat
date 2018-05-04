@@ -64,6 +64,7 @@ class AddFriend extends React.Component {
             uid: '',
             userList: [],
         });
+        this.props.history.goBack();
     }
 
     render() {

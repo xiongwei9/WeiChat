@@ -34,4 +34,24 @@ const chatFile = (data) => ({
     ...data
 });
 
-export { socketLogin, addFriend, acceptFriend, chatMsg, chatFile };
+const videoReq = (data) => ({
+    type: actionTypes.SOCKET_VIDEO_REQ,
+    ...data,
+});
+
+const videoRes = (data) => ({
+    type: actionTypes.SOCKET_VIDEO_RES,
+    ...data,
+});
+
+const videoDuel = (data) => ({
+    type: actionTypes.STORE_VIDEO_DUEL,
+    ...data,
+});
+
+const iceCandidateExchange = (data) => ({
+    type: actionTypes.SOCKET_ICECANDIDATE,
+    ...data,
+});
+
+export { socketLogin, addFriend, acceptFriend, chatMsg, chatFile, videoReq, videoRes, videoDuel, iceCandidateExchange };

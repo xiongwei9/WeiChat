@@ -2,7 +2,7 @@ $bottomBarHeight: 3em;
 
 .chat {
     .chat-list {
-        padding: 1px 5px $bottomBarHeight;
+        padding: $bottomBarHeight 5px $bottomBarHeight;
         color: #333;
         
         .me,
@@ -23,6 +23,19 @@ $bottomBarHeight: 3em;
                 border: 1px solid #eeeeee;
                 border-radius: 5px;
             }
+            .msg-img {
+                max-width: 70%;
+                border-radius: 10px;
+            }
+            .msg-file {
+                box-sizing: border-box;
+                display: block;
+                max-width: 70%;
+                padding: 10px;
+                border-radius: 5px;
+                color: #000;
+                background: rgba(250,80,80,.6);
+            }
         }
         .friend {
             .username {
@@ -40,6 +53,10 @@ $bottomBarHeight: 3em;
                 float: right;
                 // background: #53be53;
                 background: #07e607;
+            }
+            .msg-img,
+            .msg-file {
+                float: right;
             }
         }
     }
@@ -86,7 +103,7 @@ $bottomBarHeight: 3em;
     }
 
     .more {
-        position: absolute;
+        position: fixed;
         top: -100%;
         left: 0;
         box-sizing: border-box;
@@ -118,7 +135,7 @@ $bottomBarHeight: 3em;
             text-align: center;
             background: #fdfdfd;
 
-            & > input {
+            form input {
                 position: absolute;
                 left: 0;
                 top: 0;

@@ -42,19 +42,7 @@ const initState = {
 
 const initState = {
     fragment: FRAG_MESSAGE,
-    message: [{
-        uid: 'liyl',
-        name: '李云龙',
-        list: [{
-            mid: 0,
-            data: '你好啊，我是李云龙！',
-            time: 1,
-        }, {
-            mid: 1,
-            data: '你好，很高兴认识你',
-            time: 2,
-        }],
-    }],
+    message: [],
     contact: [],
     mine: {},
 };
@@ -123,6 +111,7 @@ const reducer = (state = initState, action) => {
                 mid: action.mid === 'F' ? ROLE.FRIEND : ROLE.ME,
                 data: action.msg,
                 time: new Date().getTime(),
+                msgType: action.msgType,
             });
 
             const newMessage = [ message, ...state.message ];

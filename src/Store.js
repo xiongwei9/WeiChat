@@ -5,11 +5,13 @@ import { socketStoreEnhancer } from './lib/socketStoreEnhancer/';
 
 import { reducer as authReducer } from './components/auth/';
 import { reducer as homeReducer } from './components/home/';
+import { reducer as videoReducer } from './components/video/';
 
 const initState = {};
 const reducer = combineReducers({
     auth: authReducer,
     home: homeReducer,
+    video: videoReducer,
 });
 
 const middlewares = [

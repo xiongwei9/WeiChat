@@ -8,6 +8,7 @@ import Contact from './contact';
 import Mine from './mine';
 import BottomNav from './bottomNav';
 import TopNav from './topNav';
+import { view as Header } from '../../header/';
 
 import './home.scss';
 
@@ -21,7 +22,8 @@ class Home extends React.Component {
         const fragContent = fragment === FRAG_MESSAGE ? <Message /> : fragment === FRAG_CONTACT ? <Contact /> : fragment === FRAG_MINE ? <Mine /> : null;
         return (
             <div className='home'>
-                <TopNav />
+                {/* <TopNav /> */}
+                <Header title='主页' moreText='+' moreLink='/home/add' />
                 {fragContent}
                 <BottomNav />
             </div>
