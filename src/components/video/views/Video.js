@@ -32,7 +32,6 @@ class Video extends React.Component {
         this._requestVideo = this._requestVideo.bind(this);
         this._responseVideo = this._responseVideo.bind(this);
         this._getUserMedia = this._getUserMedia.bind(this);
-        this._getRtcPeerConnection = this._getRtcPeerConnection.bind(this);
 
     }
     
@@ -57,8 +56,8 @@ class Video extends React.Component {
         // };
         return (
             <div className='video'>
-                <video ref={video => this.localVideo = video}></video>
-                {/* <video ref={video => this.remoteVideo = video}></video> */}
+                <video className='local-video' ref={video => this.localVideo = video}></video>
+                <video className='remote-video' ref={video => this.remoteVideo = video}></video>
                 {content}
             </div>
         );
@@ -79,6 +78,9 @@ class Video extends React.Component {
         if (this.props.video.icecandidate.length > 0) {
             for (let icecandidate of this.props.video.icecandidate) {
                 const conn = this.localConnection ? this.localConnection : this.remoteConnection;
+                if (!conn) {
+                    break;
+                }
                 conn.addIceCandidate(icecandidate)
                 .then(() => {
                     console.log(`addIceCandidate success`);//7 11
@@ -138,6 +140,13 @@ class Video extends React.Component {
                     });
                 }
             });
+            this.localConnection.addEventListener('addstream', (event) => {
+                console.log('add stream');
+                const mediaStream = event.stream;
+                this.remoteVideo.srcObject = mediaStream;
+                this.remoteVideo.play();
+                this.fStream = mediaStream;
+            });
 
             this.localConnection.addStream(this.mStream);
             this.localConnection.createOffer(this.connectionOption)
@@ -168,56 +177,69 @@ class Video extends React.Component {
     }
 
     _responseVideo() {
-        this.remoteConnection = new RTCPeerConnection();
-        this.remoteConnection.addEventListener('icecandidate', (event) => {
-            const peerConnection = event.target;
-            const iceCandidate = event.candidate;
+        this._getUserMedia(this.constraints)
+        .then((stream) => {
 
-            if (iceCandidate) {
-                const newIceCandidate = new RTCIceCandidate(iceCandidate);
-                this.props.iceCandidate({
-                    fromUid: this.props.uid,
-                    uid: this.props.to,
-                    data: newIceCandidate,
-                });
-            }
-        });
+            this.remoteConnection = new RTCPeerConnection();
+            this.remoteConnection.addEventListener('icecandidate', (event) => {
+                const peerConnection = event.target;
+                const iceCandidate = event.candidate;
 
-        this.remoteConnection.addEventListener('addstream', (event) => {
-            const mediaStream = event.stream;
-            this.localVideo.srcObject = mediaStream;
+                if (iceCandidate) {
+                    const newIceCandidate = new RTCIceCandidate(iceCandidate);
+                    this.props.iceCandidate({
+                        fromUid: this.props.uid,
+                        uid: this.props.to,
+                        data: newIceCandidate,
+                    });
+                }
+            });
+
+            this.remoteConnection.addEventListener('addstream', (event) => {
+                console.log('added stream');
+                const mediaStream = event.stream;
+                this.remoteVideo.srcObject = mediaStream;
+                this.remoteVideo.play();
+                this.fStream = mediaStream;
+            });
+
+            this.localVideo.srcObject = stream;
             this.localVideo.play();
-            this.fStream = mediaStream;
-        });
+            this.remoteConnection.addStream(stream);
 
-        this.remoteConnection.setRemoteDescription(this.props.video.offer)
-        .then(() => {
-            console.log(`fPeerConnection.setRemoteDescription success`);//4
-        })
-        .catch(() => {
-            console.log(`fPeerConnection.setRemoteDescription fail`);
-        });
-
-        this.remoteConnection.createAnswer()
-        .then((description) => {
-            console.log(`remotePeerConnection setLocalDescription start.`);//3
-            this.remoteConnection.setLocalDescription(description)
+            this.remoteConnection.setRemoteDescription(this.props.video.offer)
             .then(() => {
-                console.log(`fPeerConnection.setLocalDescription success`);//6
+                console.log(`fPeerConnection.setRemoteDescription success`);//4
             })
             .catch(() => {
-                console.log(`fPeerConnection.setLocalDescription fail`);
+                console.log(`fPeerConnection.setRemoteDescription fail`);
             });
 
-            this.props.videoRes({
-                fromUid: this.props.uid,
-                uid: this.props.to,
-                answer: description,
+            this.remoteConnection.createAnswer()
+            .then((description) => {
+                console.log(`remotePeerConnection setLocalDescription start.`);//3
+                this.remoteConnection.setLocalDescription(description)
+                .then(() => {
+                    console.log(`fPeerConnection.setLocalDescription success`);//6
+                })
+                .catch(() => {
+                    console.log(`fPeerConnection.setLocalDescription fail`);
+                });
+
+                this.props.videoRes({
+                    fromUid: this.props.uid,
+                    uid: this.props.to,
+                    answer: description,
+                });
+            })
+            .catch((err) => {
+                console.log(`fPeerConnection.createAnswer fail`);
+                console.log(err);
             });
         })
-        .catch((err) => {
-            console.log(`fPeerConnection.createAnswer fail`);
-            console.log(err);
+        .catch((error) => {
+            Toast.info(`navigator.getUserMedia error: ${error}`);
+            console.log('navigator.getUserMedia error: ', error);
         });
     }
 
@@ -240,41 +262,6 @@ class Video extends React.Component {
             });
         }
         return navigator.mediaDevices.getUserMedia(constraints);
-    }
-
-    _getRtcPeerConnection(video) {
-        const pc = new RTCPeerConnection();
-        pc.addEventListener('icecandidate', (event) => {
-            const peerConnection = event.target;
-            const iceCandidate = event.candidate;
-
-            if (iceCandidate) {
-                const newIceCandidate = new RTCIceCandidate(iceCandidate);
-                this.props.iceCandidate({
-                    fromUid: this.props.uid,
-                    uid: this.props.to,
-                    data: newIceCandidate,
-                });
-                // console.log('newIceCandidate');
-                // console.log(newIceCandidate);
-            }
-        });
-        pc.onaddstream = (obj) => {
-            const { stream } = obj;
-            if ('srcObject' in video) {
-                video.srcObject = stream;
-            } else if (window.URL) {
-                video.src = window.URL.createObjectURL(stream);
-            } else {
-                video.src = stream;
-            }
-            video.onloadedmetadata = () => {
-                video.play();
-            }
-        }
-        pc.ontrack = pc.onaddstream;  // Firefox打算不用onaddstream了，不过暂时不管它
-        // pc.addEventListener('icecandidate', this._handleConnection);
-        return pc;
     }
 }
 
