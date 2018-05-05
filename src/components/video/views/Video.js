@@ -11,9 +11,10 @@ class Video extends React.Component {
     constructor(props) {
         super(props);
 
-        // this.state = {
-        //     showVideo: this.props.video.fromUid !== this.props.uid,
-        // }
+        this.state = {
+            showVideo: false,
+            isResponse: 'offer' in this.props.video,
+        };
 
         this.connectionOption = {
             offerToReceiveVideo: 1,
@@ -23,15 +24,27 @@ class Video extends React.Component {
             // }]
         }
         this.constraints = {
-            // audio: true,
-            video: true,
+            audio: true,
+            video: {
+                width: {
+                    min: 320,
+                    max: 960,
+                },
+                height: {
+                    min: 320,
+                    max: 1280,
+                }
+            },
         };
 
-        this.onAcceptClick = this.onAcceptClick.bind(this);
+        this.onAccept = this.onAccept.bind(this);
+        this.onReject = this.onReject.bind(this);
+        this.onCancel = this.onCancel.bind(this);
 
         this._requestVideo = this._requestVideo.bind(this);
         this._responseVideo = this._responseVideo.bind(this);
         this._getUserMedia = this._getUserMedia.bind(this);
+        this._addIceCandidate = this._addIceCandidate.bind(this);
 
     }
     
@@ -43,72 +56,143 @@ class Video extends React.Component {
     //     }
     // }
 
-    onAcceptClick() {
-        this._responseVideo();
+    onAccept() {
+        // this._responseVideo();
+        this.props.videoAccept({
+            fromUid: this.props.uid,
+            uid: this.props.to,
+            ret: 0,
+        });
+        this.setState({
+            showVideo: true,
+        });
+    }
+
+    onReject() {
+        this.props.videoAccept({
+            fromUid: this.props.uid,
+            uid: this.props.to,
+            ret: -10000,
+        });
+        this.props.back();
+    }
+
+    onCancel() {
+        this.props.back();
     }
 
     render() {
         let content = null;
-        // if (!this.state.showVideo) {
-        //     content = (
-        //         <button type='button' onClick={this.onAcceptClick}>接受</button>
-        //     );
-        // };
+        if (this.state.showVideo) {
+            content = (
+                <React.Fragment>
+                    <video className='local-video' ref={video => this.localVideo = video}></video>
+                    <video className='remote-video' ref={video => this.remoteVideo = video}></video>
+                </React.Fragment>
+            );
+        } else {
+            if (this.state.isResponse) {
+                content = (
+                    <React.Fragment>
+                        <h2>{this.props.video.uid}在呼叫你...</h2>
+                        <div className='btns'>
+                            <button className='accept' onClick={this.onAccept} type='button'>接受</button>
+                            <button className='reject' onClick={this.onReject} type='button'>拒绝</button>
+                        </div>
+                    </React.Fragment>
+                );
+            } else {
+                content = (
+                    <React.Fragment>
+                        <h2>正在呼叫{this.props.video.uid}...</h2>
+                        <div className='btns'>
+                            <button className='cancel' onClick={this.onCancel} type='button'>取消</button>
+                        </div>
+                    </React.Fragment>
+                );
+            }
+        }
         return (
             <div className='video'>
-                <video className='local-video' ref={video => this.localVideo = video}></video>
-                <video className='remote-video' ref={video => this.remoteVideo = video}></video>
                 {content}
             </div>
         );
     }
 
     componentDidMount() {
-        if (!('offer' in this.props.video)) {
-            // 作为发送方
-            console.log('_requestVideo');
-            this._requestVideo();
-        } else {
-            console.log('_responseVideo');
-            this._responseVideo();
+        if (!this.state.isResponse) {
+            // 发送方
+            this.props.videoCall({
+                fromUid: this.props.uid,
+                uid: this.props.to,
+            });
         }
+        // if (!this.state.isResponse) {
+        //     // 作为发送方
+        //     console.log('_requestVideo');
+        //     this._requestVideo();
+        // } else {
+        //     console.log('_responseVideo');
+        //     this._responseVideo();
+        // }
     }
 
     componentDidUpdate() {
-        if (this.props.video.icecandidate.length > 0) {
-            for (let icecandidate of this.props.video.icecandidate) {
-                const conn = this.localConnection ? this.localConnection : this.remoteConnection;
-                if (!conn) {
-                    break;
-                }
-                conn.addIceCandidate(icecandidate)
-                .then(() => {
-                    console.log(`addIceCandidate success`);//7 11
-                }).catch((error) => {
-                    console.log(`addIceCandidate fail`);
-                    console.log(error);
+        console.log(`------- componentDidUpdate start --------`);
+        if (!this.state.isResponse) {
+            this.ret = this.props.video.ret;
+            this._addIceCandidate();
+            if (this.ret === undefined && this.props.video.icecandidate.length <= 0) {
+                return;
+            }
+            if (this.ret < 0) {
+                Toast.info('对方不在线或拒绝了你');
+                this.props.back();
+            }
+            if (this.ret === 0 && !this.initVideo) {
+                this.setState({
+                    showVideo: true,
                 });
+                console.log('_requestVideo');
+                this._requestVideo();
+                this.initVideo = true;
+            }
+
+            if (!this.remoteDescription && this.props.video.answer) {
+                this.localConnection.setRemoteDescription(this.props.video.answer)
+                .then(() => {
+                    console.log(`localConnection.setRemoteDescription success`);
+                })
+                .catch(() => {
+                    console.log(`localConnection.setRemoteDescription fail`);
+                });
+                this.remoteDescription = true;
+            }
+        } else {
+            if (this.props.video.offer && !this.initVideo) {
+                console.log('_responseVideo');
+                this._responseVideo();
+                this.initVideo = true;
             }
         }
-        // 作为视频请求方，收到远程的响应answer时
-        if (!('answer' in this.props.video) || this.props.video.answer === undefined || this.props.video.uid === this.props.uid) {
-            return;
-        }
-        if (!this.props.video.answer) {
-            // 对方拒绝视频
-            Toast.info('对方拒绝视频');
-            return;
-        }
-        if (!this.remoteDescription) {
-            this.localConnection.setRemoteDescription(this.props.video.answer)
-            .then(() => {
-                console.log(`localConnection.setRemoteDescription success`);
-            })
-            .catch(() => {
-                console.log(`localConnection.setRemoteDescription fail`);
-            });
-            this.remoteDescription = true;
-        }
+
+        // console.log(`- addIceCandidate ${this.props.video.icecandidate.length}`);
+        // if (this.props.video.icecandidate.length > 0) {
+        //     for (let icecandidate of this.props.video.icecandidate) {
+        //         const conn = this.localConnection ? this.localConnection : this.remoteConnection;
+        //         if (!conn) {
+        //             break;
+        //         }
+        //         conn.addIceCandidate(icecandidate)
+        //         .then(() => {
+        //             console.log(`addIceCandidate success`);//7 11
+        //         }).catch((error) => {
+        //             console.log(`addIceCandidate fail`);
+        //             console.log(error);
+        //         });
+        //     }
+        // }
+        console.log(`------- componentDidUpdate end --------`);
     }
 
     _requestVideo() {
@@ -236,6 +320,8 @@ class Video extends React.Component {
                 console.log(`fPeerConnection.createAnswer fail`);
                 console.log(err);
             });
+
+            this._addIceCandidate();
         })
         .catch((error) => {
             Toast.info(`navigator.getUserMedia error: ${error}`);
@@ -263,6 +349,24 @@ class Video extends React.Component {
         }
         return navigator.mediaDevices.getUserMedia(constraints);
     }
+
+    _addIceCandidate() {
+        if (this.props.video.icecandidate.length > 0) {
+            for (let icecandidate of this.props.video.icecandidate) {
+                const conn = this.localConnection ? this.localConnection : this.remoteConnection;
+                if (!conn) {
+                    break;
+                }
+                conn.addIceCandidate(icecandidate)
+                .then(() => {
+                    console.log(`addIceCandidate success`);//7 11
+                }).catch((error) => {
+                    console.log(`addIceCandidate fail`);
+                    console.log(error);
+                });
+            }
+        }
+    }
 }
 
 const mapStateToProps = (state, ownProps) => ({
@@ -280,6 +384,18 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     iceCandidate(data) {
         dispatch(socketActions.iceCandidateExchange(data));
     },
+    videoCall(data) {
+        dispatch(socketActions.videoCall(data));
+    },
+    videoAccept(data) {
+        dispatch(socketActions.videoAccept(data));
+    },
+    back() {
+        dispatch(socketActions.videoDuel({
+            fromUid: undefined,
+            uid: undefined,
+        }));
+    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Video);

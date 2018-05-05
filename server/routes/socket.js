@@ -236,7 +236,41 @@ const socketApi = (io, session) => {
             });
         });
 
-        /* 视频聊天请求 */
+        /* 视频聊天呼叫 */
+        socket.on('VIDEO_CALL', (resData) => {
+            const { fromUid, uid, data } = resData;
+            const socketTarget = socketMap.get(uid);
+            if (!socketTarget) {
+                socket.emit('VIDEO_ACCEPT', {
+                    ret: -404,
+                    msg: '用户不在线',
+                });
+            }
+            socketTarget.emit('VIDEO_CALL', {
+                fromUid: uid,
+                uid: fromUid,
+            });
+        });
+
+        /* 视频聊天呼叫 */
+        socket.on('VIDEO_ACCEPT', (resData) => {
+            const { fromUid, uid, ret } = resData;
+            const socketTarget = socketMap.get(uid);
+            if (!socketTarget) {
+                socket.emit('VIDEO_ACCEPT', {
+                    ret: -404,
+                    msg: '用户不在线',
+                });
+            }
+            console.log(`- ${fromUid} => ${uid} accept ${ret}`);
+            socketTarget.emit('VIDEO_ACCEPT', {
+                fromUid: uid,
+                uid: fromUid,
+                ret,
+            });
+        });
+
+        /* 视频聊天建立连接请求 */
         socket.on('VIDEO_REQ', (data) => {
             const { fromUid, uid, offer } = data;
             const socketTarget = socketMap.get(uid);

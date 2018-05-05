@@ -84,6 +84,18 @@ const middleware = (store, socket) => {
                     data: action.data,
                 });
                 break;
+            case actionTypes.SOCKET_VIDEO_CALL:
+                socket.emit('VIDEO_CALL', {
+                    fromUid: action.fromUid,
+                    uid: action.uid,
+                    data: action.data,
+                });
+                break;
+            case actionTypes.SOCKET_VIDEO_ACCEPT:
+                socket.emit('VIDEO_ACCEPT', {
+                    ...action,
+                });
+                break;
             default:
                 originalDispatch(action);
         }

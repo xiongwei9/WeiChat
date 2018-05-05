@@ -14,7 +14,7 @@ const reducer = (state = initState, action) => {
             //     fromUid = action.uid;
             //     uid = action.fromUid;
             // }
-            const { fromUid, uid } = action;
+            const { fromUid, uid, ret } = action;
             const objName = 'offer' in action ? 'offer' : 'answer';
 
             return {
@@ -22,6 +22,7 @@ const reducer = (state = initState, action) => {
                 fromUid,
                 uid,
                 [objName]: action[objName],
+                ret,
             };
         }
         case socketActionTypes.STORE_ICECANDIDATE: {

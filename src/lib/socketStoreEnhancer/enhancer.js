@@ -99,6 +99,21 @@ const enhancer = (store, socket) => {
             ...res,
         });
     });
+
+    socket.on('VIDEO_CALL', res => {
+        store.dispatch({
+            type: actionTypes.STORE_VIDEO_DUEL,
+            ...res,
+            offer: '',
+        });
+    });
+
+    socket.on('VIDEO_ACCEPT', res => {
+        store.dispatch({
+            type: actionTypes.STORE_VIDEO_DUEL,
+            ...res,
+        });
+    });
 };
 
 export default enhancer;
