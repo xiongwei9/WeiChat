@@ -18,6 +18,7 @@ class Video extends React.Component {
 
         this.connectionOption = {
             offerToReceiveVideo: 1,
+            offerToReceiveAudio: 1,
             // iceServers: [{
             //     // url: 'stun:stun.l.google.com:19302',
             //     url: 'stun.xten.com',
@@ -86,7 +87,7 @@ class Video extends React.Component {
         if (this.state.showVideo) {
             content = (
                 <React.Fragment>
-                    <video className='local-video' ref={video => this.localVideo = video}></video>
+                    <video className='local-video' muted ref={video => this.localVideo = video}></video>
                     <video className='remote-video' ref={video => this.remoteVideo = video}></video>
                 </React.Fragment>
             );
@@ -201,6 +202,7 @@ class Video extends React.Component {
             this.localVideo.srcObject = stream;
             this.localVideo.play();
             this.mStream = stream;
+            // this.localVideo.muted = true;
             this.localVideoTracks = this.mStream.getVideoTracks();
             this.localAudioTracks = this.mStream.getAudioTracks();
             if (this.localVideoTracks && this.localVideoTracks.length > 0) {
@@ -290,6 +292,7 @@ class Video extends React.Component {
             this.localVideo.srcObject = stream;
             this.localVideo.play();
             this.remoteConnection.addStream(stream);
+            // this.localVideo.muted = true;
 
             this.remoteConnection.setRemoteDescription(this.props.video.offer)
             .then(() => {
