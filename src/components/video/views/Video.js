@@ -12,6 +12,7 @@ class Video extends React.Component {
         super(props);
 
         this.state = {
+            showCacel: false,
             showVideo: false,
             isResponse: 'offer' in this.props.video,
         };
@@ -34,13 +35,16 @@ class Video extends React.Component {
                 height: {
                     min: 320,
                     max: 1280,
-                }
+                },
+                facingMode: 'user',
             },
         };
 
         this.onAccept = this.onAccept.bind(this);
         this.onReject = this.onReject.bind(this);
         this.onCancel = this.onCancel.bind(this);
+
+        this._showCacel = this._showCacel.bind(this);
 
         this._requestVideo = this._requestVideo.bind(this);
         this._responseVideo = this._responseVideo.bind(this);
@@ -85,10 +89,14 @@ class Video extends React.Component {
     render() {
         let content = null;
         if (this.state.showVideo) {
+            const myClass = (this.state.showCacel ? '' : 'none') + ' btns';
             content = (
                 <React.Fragment>
                     <video className='local-video' muted ref={video => this.localVideo = video}></video>
-                    <video className='remote-video' ref={video => this.remoteVideo = video}></video>
+                    <video className='remote-video' ref={video => this.remoteVideo = video} onClick={this._showCacel}></video>
+                    <div className={myClass}>
+                        <button className='cancel' onClick={this.onCancel}>挂断</button>
+                    </div>
                 </React.Fragment>
             );
         } else {
@@ -194,6 +202,20 @@ class Video extends React.Component {
         //     }
         // }
         console.log(`------- componentDidUpdate end --------`);
+    }
+
+    _showCacel() {
+        if (this.state.showCacel) {
+            clearTimeout(this.state.showCacel);
+        }
+        let tmp = setTimeout(() => {
+            this.setState({
+                showCacel: false,
+            });
+        }, 1500);
+        this.setState({
+            showCacel: tmp,
+        });
     }
 
     _requestVideo() {

@@ -245,6 +245,7 @@ const socketApi = (io, session) => {
                     ret: -404,
                     msg: '用户不在线',
                 });
+                return;
             }
             socketTarget.emit('VIDEO_CALL', {
                 fromUid: uid,

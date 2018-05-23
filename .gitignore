@@ -5,8 +5,8 @@ node_modules/
 
 # dist
 
-dist/
+# dist/
 
 tmp/
 
-server/static/temp/
+server/static/temp/*
